@@ -34,8 +34,12 @@ crypto_params = {
 }
 
 response = requests.get(crypto_price_url, crypto_params)
+response.raise_for_status()
 json_data = response.json()
-closing_price = json_data['c']
+closing_price = ("".join(str(json_data['c'])))
+closing_price_float = float(closing_price.strip('[]'))
+price_data = round(closing_price_float, 2)
 
-client.chat_postMessage(channel='#crypto_alerts', text=f" Around {datetime_object} -> {crypto_params['symbol']} price: {closing_price}")
+if price_data <= float("1.08"):
+    client.chat_postMessage(channel='#meme_stocks', text=f" Around {datetime_object} -> {crypto_params['symbol']} price: {price_data}")
 
